@@ -1,6 +1,8 @@
 import pandas as pd
 import glob
-from sklearn.preprocessing import LabelEncoder
+
+from src.charts.plot_data import plot_heatmap
+
 
 def create_dataframe():
     # Build file paths for all csv files
@@ -27,11 +29,13 @@ def create_dataframe():
 
 def clean_dataframe(df):
     # Drop all rows with missing values
-    return df.dropna()
+    return df.iloc[:, 1:].dropna()
 
 def encode_variables(df):
     # Use one-hot encoding for room_type, because it has 3 possible categories
     df = pd.get_dummies(df, columns=["room_type"], drop_first=False)
+    df = pd.get_dummies(df, columns=["city"], drop_first=False)
+    df = pd.get_dummies(df, columns=["day_type"], drop_first=False)
     binary_cols = ["room_shared", "room_private", "host_is_superhost"]
     df[binary_cols] = df[binary_cols].astype(int)
     return df
@@ -40,4 +44,7 @@ def process_data():
     df = create_dataframe()
     df = clean_dataframe(df)
     df = encode_variables(df)
+    print(df.info())
+    print(df.describe())
+    plot_heatmap(df.corr())
     return df

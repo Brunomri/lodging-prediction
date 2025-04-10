@@ -31,9 +31,9 @@ def clean_dataframe(df):
 
 def encode_variables(df):
     # Use one-hot encoding for room_type, city and day type because they are categorical data
-    df = pd.get_dummies(df, columns=["room_type"], drop_first=False)
-    df = pd.get_dummies(df, columns=["city"], drop_first=False)
-    df = pd.get_dummies(df, columns=["day_type"], drop_first=False)
+    df = pd.get_dummies(df, columns=["room_type"], drop_first=False, dtype=int)
+    df = pd.get_dummies(df, columns=["city"], drop_first=False, dtype=int)
+    df = pd.get_dummies(df, columns=["day_type"], drop_first=False, dtype=int)
     # Convert columns with true or false values to 1 or 0
     binary_cols = ["room_shared", "room_private", "host_is_superhost"]
     df[binary_cols] = df[binary_cols].astype(int)

@@ -1,6 +1,5 @@
 import pandas as pd
 import glob
-from src.charts.plot_data import plot_heatmap
 
 def create_dataframe():
     # Build file paths for all csv files
@@ -27,7 +26,11 @@ def create_dataframe():
 
 def clean_dataframe(df):
     # Remove first column with row index and drop all rows with missing values
-    return df.iloc[:, 1:].dropna()
+    df = df.iloc[:, 1:].dropna()
+    # removing outliners with realSum > 1000
+    # this operation set our MEAN from 123 to 79
+    df = df[df['realSum'] <= 300]
+    return df
 
 def encode_variables(df):
     # Use one-hot encoding for room_type, city and day type because they are categorical data
@@ -37,6 +40,8 @@ def encode_variables(df):
     # Convert columns with true or false values to 1 or 0
     binary_cols = ["room_shared", "room_private", "host_is_superhost"]
     df[binary_cols] = df[binary_cols].astype(int)
+    # Rounding decimals to 3 for realSum, 3 numbers after comma 
+    df['realSum'] = df['realSum'].round(decimals=3)
     return df
 
 def split_input_target(df):
@@ -51,5 +56,4 @@ def process_data():
     df = encode_variables(df)
     print(df.info())
     print(df.describe())
-    plot_heatmap(df.corr())
-    return split_input_target(df)
+    return df

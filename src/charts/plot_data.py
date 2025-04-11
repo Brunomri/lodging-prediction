@@ -6,7 +6,12 @@ def plot_heatmap(data):
     sns.heatmap(data = data, cmap = 'Blues', annot = True)
     plt.show()
 
-def plot_scatter(pred, test):
+def plot_scatter(x, y):
     plt.figure(figsize = (24, 12))
-    sns.scatterplot(x = pred, y = test)
+    sns.scatterplot(x = x, y = y)
+    plt.show()
+
+def plot_histogram(data, column):
+    plt.figure(figsize = (24, 12))
+    sns.histplot(data = data, x = column)
     plt.show()

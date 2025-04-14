@@ -1,5 +1,8 @@
 import pandas as pd
 import glob
+
+from pandas.core.dtypes.common import is_numeric_dtype
+
 from src.charts.plot_data import plot_heatmap, plot_distribution
 
 
@@ -47,12 +50,16 @@ def split_input_target(df):
     y = df['realSum']
     return x, y
 
-def handle_outliers(df):
-    # Calculate the 97th percentile
-    q_high = df['realSum'].quantile(0.97)
-    # Cap outliers by replacing values higher than the 97th percentile with
-    # exactly the 97th percentile value
-    df['realSum'] = df['realSum'].clip(upper=q_high)
+def handle_outliers(df, lower_q=0.03, upper_q=0.97):
+    # For every column of the dataframe, drop rows with values
+    # below the lower percentile or above the upper percentile
+    for col in df.columns:
+        if is_numeric_dtype(df[col]) and df[col].nunique() > 2:
+            lower = df[col].quantile(lower_q)
+            upper = df[col].quantile(upper_q)
+            df = df[df[col].between(lower, upper)]
+            plot_distribution(df, col, f"{col} Distribution")
+
     return df
 
 def process_data():
@@ -62,6 +69,5 @@ def process_data():
     df = handle_outliers(df)
     print(df.info())
     print(df.describe())
-    plot_heatmap(df.corr())
-    plot_distribution(df)
+    plot_heatmap(df.corr(), "Correlation Heatmap")
     return split_input_target(df)

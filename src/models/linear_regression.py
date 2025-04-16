@@ -7,7 +7,7 @@ def lr_predict(x_train, y_train, x_test):
     lr = LinearRegression()
     lr.fit(x_train, np.log1p(y_train))
     get_model_stats(x_train, y_train)
-    return np.expm1(lr.predict(x_test))
+    return np.expm1(lr.predict(x_train)), np.expm1(lr.predict(x_test))
 
 def get_model_stats(x_train, y_train):
     X2 = sm.add_constant(x_train)

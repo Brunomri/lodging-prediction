@@ -6,6 +6,7 @@ from src.charts.plot_data import plot_scatter
 from src.models.lasso import lasso_predict
 from src.models.linear_regression import lr_predict
 from src.models.random_forest import rf_predict
+from src.models.xgboost import xgboost_predict
 
 
 # Split data into train and test sets
@@ -30,6 +31,7 @@ def run_models(x_train, x_test, y_train, y_test):
     run_linear_regression(x_train_scaled, x_test_scaled, y_train, y_test)
     run_lasso(x_train_scaled, x_test_scaled, y_train, y_test)
     run_random_forest(x_train_scaled, x_test_scaled, y_train, y_test)
+    run_xgboost(x_train_scaled, x_test_scaled, y_train, y_test)
 
 def run_linear_regression(x_train, x_test, y_train, y_test):
     print("Linear Regression")
@@ -56,4 +58,13 @@ def run_random_forest(x_train, x_test, y_train, y_test):
     plot_scatter(y_pred_rf_test, y_test, "RandomForest Test")
     evaluate(y_train, y_pred_rf_train, "RandomForest Train")
     evaluate(y_test, y_pred_rf_test, "RandomForest Test")
+    print("--------------------")
+
+def run_xgboost(x_train, x_test, y_train, y_test):
+    print("XGBoost")
+    y_pred_xgb_train, y_pred_xgb_test = xgboost_predict(x_train, y_train, x_test)
+    plot_scatter(y_pred_xgb_train, y_train, "XGBoost Train")
+    plot_scatter(y_pred_xgb_test, y_test, "XGBoost Test")
+    evaluate(y_train, y_pred_xgb_train, "XGBoost Train")
+    evaluate(y_test, y_pred_xgb_test, "XGBoost Test")
     print("--------------------")
